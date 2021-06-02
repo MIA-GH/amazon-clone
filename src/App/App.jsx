@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Header, CheckOut, Home, LogIn } from "../Components/index";
 
-
+// root of the application
 function App() {
   return (
     <Router>
