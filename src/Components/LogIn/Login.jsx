@@ -36,18 +36,19 @@ function LogIn() {
 
     /* Switch between the log in and register screen */
     const handleSwitch = (event) => {
-        event.preventDefault(); // prevent refreshing of the page
+        // prevent refreshing of the page
+        event.preventDefault();
         setLogIn(!login);
     }
 
     // handle log in
     const handleLogIn = async (event) => {
-        event.preventDefault(); // prevent refreshing of the page
+        event.preventDefault();
     }
 
     // handle sign up
     const handleSignUp = async (event) => {
-        event.preventDefault(); // prevent refreshing of the page
+        event.preventDefault();
     }
 
     // decide on which authentication function to call
