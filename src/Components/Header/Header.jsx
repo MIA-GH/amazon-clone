@@ -1,13 +1,26 @@
 import React from 'react';
 import './Header.css';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import SearchIcon from '@material-ui/icons/Search';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import { Logo } from "../../assets/AssetExport";
 import { useStateValue } from "../../Provider/StateProvider";
+import { authentication } from '../../Config/FireBase';
 
 function Header() {
-    const [{ basket }] = useStateValue();
+    // eslint-disable-next-line no-unused-vars
+    const [{ basket, user }, dispatch] = useStateValue();
+    const browserHistory = useHistory()
+
+    const handleAuthentication = (event) => {
+        event.preventDefault();
+        if (user) {
+            authentication.signOut();
+        } else {
+            browserHistory.push('/login');
+        }
+    }
+
     return (
         <nav className="header">
             <Link to='/'>
@@ -20,10 +33,14 @@ function Header() {
             <div className="header__nav">
 
                 {/* this is one of the links on the navigation bar */}
-                <Link className="header__link" to="/login">
+                <Link className="header__link" onClick={handleAuthentication}>
                     <div className="header__option">
-                        <span className="header__optionLineOne">Hello Musah</span>
-                        <span className="header__optionLineTwo">Sign In</span>
+                        <span className="header__optionLineOne">
+                            {user ? "Hello " + user?.email : "Hello Guest"}
+                        </span>
+                        <span className="header__optionLineTwo">
+                            {user ? "Sign Out" : "Sign In"}
+                        </span>
                     </div>
                 </Link>
 

@@ -1,37 +1,29 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Logo } from '../../assets/AssetExport';
+import { Link, useHistory } from 'react-router-dom';
+import { LogoAlt } from '../../assets/AssetExport';
+import { authentication } from '../../Config/FireBase';
 import './Login.css';
 
-// values to handle state
-const credentialValues = {
-    name: "",
-    email: "",
-    password: "",
-};
+const initialValues = {
+    userName: '',
+    userEmail: '',
+    userPassword: '',
+}
 
 function LogIn() {
 
     // state
-    const [values, setValues] = useState(credentialValues);
+    const [values, setValues] = useState(initialValues);
     const [login, setLogIn] = useState(false);
 
+    // browser history
+    const browserHistory = useHistory();
+
     // on password change
-    const onPassowrdChange = (event) => {
+    const onUserInputChanged = (event) => {
         event.preventDefault();
-        setValues({ password: event.target.value });
-    }
-
-    // on email change 
-    const onEmailChanged = (event) => {
-        event.preventDefault();
-        setValues({ email: event.target.value });
-    }
-
-    // on user name field change
-    const onUserNameChanged = (event) => {
-        event.preventDefault();
-        setValues({ name: event.target.value });
+        const { name, value } = event.target;
+        setValues({ [name]: value });
     }
 
     /* Switch between the log in and register screen */
@@ -42,22 +34,40 @@ function LogIn() {
     }
 
     // handle log in
-    const handleLogIn = async (event) => {
-        event.preventDefault();
+    const handleLogIn = async () => {
+        await authentication
+            .signInWithEmailAndPassword(values.userEmail, values.userPassword)
+            .then((auth) => {
+                if (auth) {
+                    browserHistory.push('/');
+                }
+            })
+            .catch((error) => {
+                alert(error.message);
+            })
     }
 
     // handle sign up
-    const handleSignUp = async (event) => {
-        event.preventDefault();
+    const handleSignUp = async () => {
+        await authentication
+            .createUserWithEmailAndPassword(values.userEmail, values.userPassword)
+            .then((auth) => {
+                if (auth) {
+                    browserHistory.push('/');
+                }
+            })
+            .catch((error) => {
+                alert(error.message);
+            })
     }
 
     // decide on which authentication function to call
     const handleAuthentication = (event) => {
         event.preventDefault();
         if (!login) {
-            handleSignUp();
-        } else {
             handleLogIn();
+        } else {
+            handleSignUp();
         }
     }
 
@@ -65,14 +75,10 @@ function LogIn() {
     return (
         <div className="login">
             <Link to='/'>
-                <img className="login__logo" src={Logo} alt="brand identity" />
+                <img className="login__logo" src={LogoAlt} alt="brand identity" />
             </Link>
             <div className="login__container">
-                {
-                    !login ?
-                        <h1 className="form__title">Sign In</h1> :
-                        <h1 className="form__title">Sign Up</h1>
-                }
+                <h1 className="form__title">{!login ? "Sign In" : "Sign Out"}</h1>
                 <form action="">
                     {
                         !login ?
@@ -81,10 +87,10 @@ function LogIn() {
                                 <label className="input__title" htmlFor="name">Name</label>
                                 <input
                                     className="user__name"
-                                    name="name"
+                                    name="userName"
                                     type="text"
-                                    value={values.name}
-                                    onChange={onUserNameChanged}
+                                    value={values.userName}
+                                    onChange={onUserInputChanged}
                                 />
                             </div>
                     }
@@ -92,29 +98,26 @@ function LogIn() {
                     <label className="input__title" htmlFor="email">email</label>
                     <input
                         className="email__address"
-                        name="email"
+                        name="userEmail"
                         type="text"
-                        value={values.email}
-                        onChange={onEmailChanged}
+                        value={values.userEmail}
+                        onChange={onUserInputChanged}
                     />
 
                     <label className="input__title" htmlFor="password">Password</label>
                     <input
                         className="password"
-                        name="password"
+                        name="userPassword"
                         type="password"
-                        value={values.password}
-                        onChange={onPassowrdChange}
+                        value={values.userPassword}
+                        onChange={onUserInputChanged}
                     />
                     <button
                         className="login__button"
                         type="submit"
                         onClick={handleAuthentication}
                     >
-                        {
-                            !login ?
-                                <span>Log In</span> : <span>Register</span>
-                        }
+                        <span>{!login ? "Log In" : "Register"}</span>
                     </button>
                 </form>
                 <div className="other__info__container">
@@ -126,11 +129,7 @@ function LogIn() {
                         type="submit"
                         onClick={handleSwitch}
                     >
-                        {
-                            !login ?
-                                <span>Create Account</span> :
-                                <span>Log In</span>
-                        }
+                        <span>{!login ? "Create Account" : "Log In"}</span>
                     </button>
                 </div>
             </div>
