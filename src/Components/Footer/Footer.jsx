@@ -33,7 +33,7 @@ function Footer() {
         <div className='footer-link-wrapper'>
           <div className='footer-link-items'>
             <h2>About Us</h2>
-            <Link to='/about-page'>About Kofabra</Link>
+            <Link to='/about-page'>About</Link>
             <Link to='/about-page'>Testimonials</Link>
             <Link to='/about-page'>Investors</Link>
             <Link to='/terms-page'>Terms of Service</Link>

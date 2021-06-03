@@ -1,6 +1,6 @@
 import React from 'react';
 import './Header.css';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import SearchIcon from '@material-ui/icons/Search';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import { Logo } from "../../assets/AssetExport";
@@ -10,14 +10,9 @@ import { authentication } from '../../Config/FireBase';
 function Header() {
     // eslint-disable-next-line no-unused-vars
     const [{ basket, user }, dispatch] = useStateValue();
-    const browserHistory = useHistory()
-
-    const handleAuthentication = (event) => {
-        event.preventDefault();
+    const handleAuthentication = () => {
         if (user) {
             authentication.signOut();
-        } else {
-            browserHistory.push('/login');
         }
     }
 
@@ -33,8 +28,8 @@ function Header() {
             <div className="header__nav">
 
                 {/* this is one of the links on the navigation bar */}
-                <Link className="header__link" onClick={handleAuthentication}>
-                    <div className="header__option">
+                <Link to={!user && '/login'} className="header__link">
+                    <div className="header__option" onClick={handleAuthentication}>
                         <span className="header__optionLineOne">
                             {user ? "Hello " + user?.email : "Hello Guest"}
                         </span>

@@ -4,60 +4,118 @@ import { LogoAlt } from '../../assets/AssetExport';
 import { authentication } from '../../Config/FireBase';
 import './Login.css';
 
-const initialValues = {
-    userName: '',
-    userEmail: '',
-    userPassword: '',
-}
 
 function LogIn() {
-
     // state
-    const [values, setValues] = useState(initialValues);
+    const [userName, setUserName] = useState("");
+    const [userEmail, setUserEmail] = useState("");
+    const [userPassword, setUserPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const [login, setLogIn] = useState(false);
 
     // browser history
     const browserHistory = useHistory();
 
-    // on password change
-    const onUserInputChanged = (event) => {
+    // clear errors
+    const clearErrors = () => {
+        setErrorMessage("")
+    };
+
+    // clear input fields
+    const clearInputs = () => {
+        setUserName("");
+        setUserEmail("");
+        setUserPassword("");
+    }
+
+    // on User Name change
+    const onUserNameInputChanged = (event) => {
         event.preventDefault();
-        const { name, value } = event.target;
-        setValues({ [name]: value });
+        clearErrors();
+        setUserName(event.target.value);
+    }
+
+    // on Email change
+    const onUserEmailInputChanged = (event) => {
+        event.preventDefault();
+        clearErrors();
+        setUserEmail(event.target.value);
+    }
+
+
+    // on password change
+    const onUserPasswordInputChanged = (event) => {
+        event.preventDefault();
+        clearErrors();
+        setUserPassword(event.target.value);
     }
 
     /* Switch between the log in and register screen */
     const handleSwitch = (event) => {
         // prevent refreshing of the page
         event.preventDefault();
+        clearErrors();
+        clearInputs();
         setLogIn(!login);
     }
 
     // handle log in
     const handleLogIn = async () => {
+        clearErrors();
         await authentication
-            .signInWithEmailAndPassword(values.userEmail, values.userPassword)
+            .signInWithEmailAndPassword(userEmail, userPassword)
             .then((auth) => {
                 if (auth) {
                     browserHistory.push('/');
                 }
             })
             .catch((error) => {
-                alert(error.message);
+                switch (error.code) {
+                    case "auth/invalid-email":
+                        setErrorMessage("Invalid Email");
+                        break;
+                    case "auth/user-disabled":
+                        setErrorMessage("Account has been disabled");
+                        break;
+                    case "auth/user-not-found":
+                        setErrorMessage("User not found");
+                        break;
+                    case "auth/wrong-password":
+                        setErrorMessage("Invalid password");
+                        break;
+                    default:
+                        setErrorMessage("A network error occured");
+                        break;
+                }
             })
     }
 
     // handle sign up
     const handleSignUp = async () => {
+        clearErrors();
         await authentication
-            .createUserWithEmailAndPassword(values.userEmail, values.userPassword)
+            .createUserWithEmailAndPassword(userEmail, userPassword)
             .then((auth) => {
                 if (auth) {
                     browserHistory.push('/');
                 }
             })
             .catch((error) => {
-                alert(error.message);
+                setErrorMessage(error.message);
+                switch (error.code) {
+                    case "auth/invalid-email":
+                        setErrorMessage("Invalid Email");
+                        break;
+                    case "auth/email-already-in-use":
+                        setErrorMessage("Email in use by another account");
+                        break;
+                    case "auth/weak-password":
+                        setErrorMessage("Password must be at least 8 characters");
+                        break;
+                    default:
+                        setErrorMessage("A network error occured");
+                        break;
+                }
             })
     }
 
@@ -89,8 +147,8 @@ function LogIn() {
                                     className="user__name"
                                     name="userName"
                                     type="text"
-                                    value={values.userName}
-                                    onChange={onUserInputChanged}
+                                    value={userName}
+                                    onChange={onUserNameInputChanged}
                                 />
                             </div>
                     }
@@ -100,8 +158,8 @@ function LogIn() {
                         className="email__address"
                         name="userEmail"
                         type="text"
-                        value={values.userEmail}
-                        onChange={onUserInputChanged}
+                        value={userEmail}
+                        onChange={onUserEmailInputChanged}
                     />
 
                     <label className="input__title" htmlFor="password">Password</label>
@@ -109,9 +167,10 @@ function LogIn() {
                         className="password"
                         name="userPassword"
                         type="password"
-                        value={values.userPassword}
-                        onChange={onUserInputChanged}
+                        value={userPassword}
+                        onChange={onUserPasswordInputChanged}
                     />
+                    <p className="error__message">{errorMessage}</p>
                     <button
                         className="login__button"
                         type="submit"

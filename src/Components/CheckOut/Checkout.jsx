@@ -7,7 +7,7 @@ import { ProductLarge1 } from "../../assets/AssetExport";
 
 function CheckOut() {
     // eslint-disable-next-line no-unused-vars
-    const [{ basket }, dispatch] = useStateValue();
+    const [{ basket, user }, dispatch] = useStateValue();
     return (
         <div className="checkout">
             <div className="checkout__left">
@@ -15,6 +15,7 @@ function CheckOut() {
                 {
                     basket?.length === 0 ? (
                         <div>
+                            <h1>Hey {user?.email}</h1>
                             <h2>Your basket is empty</h2>
                             <p>
                                 You have no items in your basket. To buy one click
@@ -23,6 +24,7 @@ function CheckOut() {
                         </div>
                     ) : (
                         <div>
+                            <h1>Hey {user?.email}</h1>
                             <h2 className="checkout__title">Your shopping basket</h2>
                             {
                                 basket.map(item => (
