@@ -3,10 +3,17 @@ import './SubTotal.css';
 import CurrencyFormat from 'react-currency-format';
 import { getBasketTotal } from "../../Provider/reducer";
 import { useStateValue } from "../../Provider/StateProvider";
+import { useHistory } from 'react-router-dom';
 
 function SubTotal() {
     // eslint-disable-next-line no-unused-vars
     const [{ basket }, dispatch] = useStateValue();
+    const browserHistory = useHistory()
+
+    const goToPaymentPage = () => {
+        browserHistory.push('/payment-page');
+    }
+
     return (
         <div className="subTotal">
             {/* total price goes here */}
@@ -28,7 +35,7 @@ function SubTotal() {
                 prefix={"€"}
             />
 
-            <button className="proceedToCheckOut">
+            <button className="proceedToCheckOut" onClick={goToPaymentPage}>
                 Proceed to checkout
             </button>
         </div>

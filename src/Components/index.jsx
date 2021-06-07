@@ -6,3 +6,4 @@ export { default as LogIn } from './LogIn/Login';
 export { default as CheckOut } from './CheckOut/Checkout';
 export { default as Button } from './Button/Button';
 export { default as Footer } from './Footer/Footer';
+export { default as Payment } from './Payment/Payment';
