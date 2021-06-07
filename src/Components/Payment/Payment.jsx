@@ -7,9 +7,9 @@ import CurrencyFormat from 'react-currency-format';
 import { getBasketTotal } from '../../Provider/reducer';
 import axios from '../../Config/axios';
 import './Payment.css';
+import { database } from '../../Config/FireBase';
 
 function Payment() {
-    // eslint-disable-next-line no-unused-vars
     const [{ user, basket }, dispatch] = useStateValue();
     const browserHistory = useHistory();
 
@@ -28,15 +28,32 @@ function Payment() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setProcessing(true);
+        // eslint-disable-next-line no-unused-vars
         const payload = await stripe.confirmCardPayment(clientSecret, {
             payment_method: {
                 card: elements.getElement(CardElement)
             }
         }).then(({ paymentIntent }) => {
             // payment intent === payment confirmation
+
+            database
+                .collection('users')
+                .doc(user?.uid)
+                .collection('orders')
+                .doc(paymentIntent.id)
+                .set({
+                    basket: basket,
+                    amount: paymentIntent.amount,
+                    created: paymentIntent.created,
+                });
+
             setSucceeded(true);
             setError(null);
             setProcessing(false);
+
+            dispatch({
+                type: "EMPTY_BASKET",
+            });
 
             browserHistory.replace('/orders-page');
         });

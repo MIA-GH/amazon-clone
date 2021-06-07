@@ -3,7 +3,7 @@ import React from 'react';
 import { useStateValue } from "../../../Provider/StateProvider";
 import './CheckoutProduct.css';
 
-function CheckoutProduct({ id, title, image, price, rating }) {
+function CheckoutProduct({ id, title, image, price, rating, hideButton }) {
 
     // eslint-disable-next-line no-unused-vars
     const [{ basket }, dispatch] = useStateValue();
@@ -34,9 +34,14 @@ function CheckoutProduct({ id, title, image, price, rating }) {
                         ))
                     }
                 </div>
-                <button className="removeProductFromBasket" onClick={removeFromCart}>
-                    Remove from Basket
-                    </button>
+                {
+                    !hideButton &&
+                    (
+                        <button className="removeProductFromBasket" onClick={removeFromCart}>
+                            Remove from Basket
+                        </button>
+                    )
+                }
             </div>
         </div>
     );

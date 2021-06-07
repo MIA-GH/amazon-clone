@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { Header, CheckOut, Home, LogIn, Footer, Payment } from "../Components/index";
+import { Header, CheckOut, Home, LogIn, Footer, Payment, Orders } from "../Components/index";
 import { authentication } from '../Config/FireBase';
 import { useStateValue } from '../Provider/StateProvider';
 import { loadStripe } from '@stripe/stripe-js';
@@ -40,6 +40,11 @@ function App() {
     <Router>
       <div className="app">
         <Switch>
+          <Route path='/orders-page'>
+            <Header />
+            <Orders />
+            <Footer />
+          </Route>
           <Route path='/payment-page'>
             <Header />
             <Elements stripe={promise}>

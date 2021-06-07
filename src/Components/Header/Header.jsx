@@ -42,7 +42,7 @@ function Header() {
                         </Link>
 
                         {/* this is one of the links on the navigation bar */}
-                        <Link className="header__link" to="/">
+                        <Link className="header__link" to="/orders-page">
                             <div className="header__option">
                                 <span className="header__optionLineOne">Returns</span>
                                 <span className="header__optionLineTwo">& Orders</span>
